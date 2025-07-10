@@ -11,10 +11,18 @@ export default function RefreshButton() {
   
   const refreshMutation = useMutation({
     mutationFn: async () => {
-      return apiRequest({
-        endpoint: '/api/vcs/refresh',
-        method: 'POST'
+      const response = await fetch('/api/vcs/refresh', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      
+      if (!response.ok) {
+        throw new Error('Failed to refresh VC data');
+      }
+      
+      return response.json();
     },
     onSuccess: (data: { success: boolean; count: number }) => {
       if (data.success) {
