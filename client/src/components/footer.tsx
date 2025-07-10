@@ -28,8 +28,8 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Platform</h4>
             <ul className="space-y-2 text-secondary-foreground/80">
-              <li><Link href="/search"><a className="hover:text-secondary-foreground transition-colors">Browse VCs</a></Link></li>
-              <li><Link href="/search"><a className="hover:text-secondary-foreground transition-colors">Search by Industry</a></Link></li>
+              <li><Link href="/search"><span className="hover:text-secondary-foreground transition-colors cursor-pointer">Browse VCs</span></Link></li>
+              <li><Link href="/search"><span className="hover:text-secondary-foreground transition-colors cursor-pointer">Search by Industry</span></Link></li>
               <li><a href="#" className="hover:text-secondary-foreground transition-colors">Contact Database</a></li>
               <li><a href="#" className="hover:text-secondary-foreground transition-colors">API Access</a></li>
             </ul>

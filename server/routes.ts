@@ -23,6 +23,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Search VCs - this needs to be before the :id route
+  app.get("/api/vcs/search", async (req, res) => {
+    try {
+      const query = searchQuerySchema.parse(req.query);
+      const results = await storage.searchVCs(query);
+      res.json(results);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid search parameters", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to search VCs" });
+    }
+  });
+
   // Get a specific VC
   app.get("/api/vcs/:id", async (req, res) => {
     try {
@@ -36,20 +50,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(vc);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch VC" });
-    }
-  });
-
-  // Search VCs
-  app.get("/api/vcs/search", async (req, res) => {
-    try {
-      const query = searchQuerySchema.parse(req.query);
-      const results = await storage.searchVCs(query);
-      res.json(results);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Invalid search parameters", details: error.errors });
-      }
-      res.status(500).json({ error: "Failed to search VCs" });
     }
   });
 

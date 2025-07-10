@@ -16,22 +16,22 @@ export default function Header() {
           
           <nav className="hidden md:flex space-x-8">
             <Link href="/">
-              <a className={`px-3 py-2 text-sm font-medium transition-colors ${
+              <span className={`px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 location === '/' 
                   ? 'text-primary' 
                   : 'text-muted-foreground hover:text-primary'
               }`}>
                 Home
-              </a>
+              </span>
             </Link>
             <Link href="/search">
-              <a className={`px-3 py-2 text-sm font-medium transition-colors ${
+              <span className={`px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
                 location === '/search' 
                   ? 'text-primary' 
                   : 'text-muted-foreground hover:text-primary'
               }`}>
                 Browse VCs
-              </a>
+              </span>
             </Link>
           </nav>
           

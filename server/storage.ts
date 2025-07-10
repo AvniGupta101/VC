@@ -287,7 +287,22 @@ export class MemStorage implements IStorage {
 
   async createVC(insertVC: InsertVC): Promise<VC> {
     const id = this.currentId++;
-    const vc: VC = { ...insertVC, id };
+    const vc: VC = { 
+      ...insertVC, 
+      id,
+      // Ensure proper null handling for optional fields
+      website: insertVC.website || null,
+      twitter: insertVC.twitter || null,
+      imageUrl: insertVC.imageUrl || null,
+      isVerified: insertVC.isVerified ?? false,
+      checkSizeMin: insertVC.checkSizeMin || null,
+      checkSizeMax: insertVC.checkSizeMax || null,
+      // Ensure arrays are properly typed
+      geographicFocus: Array.isArray(insertVC.geographicFocus) ? insertVC.geographicFocus as string[] : [],
+      sectors: Array.isArray(insertVC.sectors) ? insertVC.sectors as string[] : [],
+      investmentStages: Array.isArray(insertVC.investmentStages) ? insertVC.investmentStages as string[] : [],
+      portfolioCompanies: Array.isArray(insertVC.portfolioCompanies) ? insertVC.portfolioCompanies as string[] : []
+    };
     this.vcs.set(id, vc);
     return vc;
   }
