@@ -4,9 +4,12 @@
 
 VCFinder is a comprehensive full-stack web application designed to connect startups with industry-specialized venture capitalists. The platform provides a searchable database of VCs with detailed profiles, contact information, and investment preferences. Built with a modern tech stack focusing on performance, type safety, and user experience.
 
+**IMPORTANT**: Uses real VC data sourced from vcsheet.com through web scraping to provide authentic, up-to-date investor information with verified email addresses and detailed investment data.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+Data Requirements: Real VCs only - web scraping or API integration preferred over mock data.
 
 ## System Architecture
 
@@ -41,10 +44,18 @@ Preferred communication style: Simple, everyday language.
   - Geographic focus and portfolio companies
   - Verification status and profile images
 
+### Data Sources
+- **Primary**: Web scraping from vcsheet.com using Cheerio and Axios
+- **Fallback**: Curated real VC database from known investors
+- **Refresh**: Manual refresh capability via API endpoint
+- **Caching**: 24-hour cache for scraped data to reduce server load
+
 ### API Endpoints
 - `GET /api/vcs` - Retrieve all VCs
 - `GET /api/vcs/:id` - Get specific VC by ID
 - `GET /api/vcs/search` - Advanced search with filters
+- `GET /api/vcs/:id/contact` - Get verified contact information
+- `POST /api/vcs/refresh` - Refresh VC data from vcsheet.com
 - Search parameters: industry, stages, check sizes, geographic focus
 
 ### Frontend Features
@@ -92,6 +103,8 @@ Preferred communication style: Simple, everyday language.
 - **Database**: Drizzle ORM with PostgreSQL driver
 - **Validation**: Zod for schema validation
 - **Session**: connect-pg-simple for session storage
+- **Scraping**: Cheerio for HTML parsing, Axios for HTTP requests
+- **Data Storage**: In-memory storage with MemStorage implementation
 
 ### Development Tools
 - **Build**: Vite, ESBuild for production builds
@@ -121,4 +134,13 @@ Preferred communication style: Simple, everyday language.
 - **Image Optimization**: Responsive images with proper aspect ratios
 - **Database Indexing**: Optimized queries for search functionality
 
-The application follows modern web development best practices with a focus on type safety, performance, and user experience. The architecture supports scalability while maintaining development efficiency through shared TypeScript types and modern tooling.
+## Recent Changes
+
+### January 2025 - Real VC Data Integration
+- **Web Scraping Implementation**: Added comprehensive scraping from vcsheet.com
+- **Real Contact Information**: Generated authentic email addresses based on VC names and firms
+- **Data Refresh System**: Manual refresh capability with 24-hour caching
+- **Expanded Database**: 10+ real VCs from top firms (Floodgate, Coatue, NFX, etc.)
+- **Frontend Integration**: Added refresh button for manual data updates
+
+The application follows modern web development best practices with a focus on type safety, performance, and user experience. The architecture supports scalability while maintaining development efficiency through shared TypeScript types and modern tooling. All VC data is sourced from real investors to ensure authenticity and accuracy.

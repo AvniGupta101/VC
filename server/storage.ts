@@ -1,4 +1,5 @@
 import { vcs, type VC, type InsertVC } from "@shared/schema";
+import { vcScraper } from "./scraper";
 
 export interface IStorage {
   getVC(id: number): Promise<VC | undefined>;
@@ -12,6 +13,7 @@ export interface IStorage {
   }): Promise<{ vcs: VC[]; total: number }>;
   getAllVCs(): Promise<VC[]>;
   createVC(vc: InsertVC): Promise<VC>;
+  refreshVCs(): Promise<{ success: boolean; count: number }>;
 }
 
 export class MemStorage implements IStorage {
@@ -21,10 +23,26 @@ export class MemStorage implements IStorage {
   constructor() {
     this.vcs = new Map();
     this.currentId = 1;
-    this.initializeMockData();
+    this.initializeRealData();
   }
 
-  private initializeMockData() {
+  private async initializeRealData() {
+    try {
+      console.log('[Storage] Loading real VC data...');
+      const scrapedVCs = await vcScraper.scrapeVCs();
+      
+      for (const vcData of scrapedVCs) {
+        await this.createVC(vcData);
+      }
+      
+      console.log(`[Storage] Successfully loaded ${scrapedVCs.length} real VCs`);
+    } catch (error) {
+      console.error('[Storage] Error loading real VC data, falling back to sample data:', error);
+      this.initializeFallbackData();
+    }
+  }
+
+  private async initializeFallbackData() {
     // Based on actual VCSheet data structure
     const mockVCs: InsertVC[] = [
       {
@@ -233,9 +251,9 @@ export class MemStorage implements IStorage {
       }
     ];
 
-    mockVCs.forEach(vc => {
-      this.createVC(vc);
-    });
+    for (const vc of mockVCs) {
+      await this.createVC(vc);
+    }
   }
 
   async getVC(id: number): Promise<VC | undefined> {
@@ -305,6 +323,29 @@ export class MemStorage implements IStorage {
     };
     this.vcs.set(id, vc);
     return vc;
+  }
+
+  async refreshVCs(): Promise<{ success: boolean; count: number }> {
+    try {
+      console.log('[Storage] Refreshing VC data from vcsheet.com...');
+      
+      // Clear existing data
+      this.vcs.clear();
+      this.currentId = 1;
+      
+      // Fetch fresh data
+      const scrapedVCs = await vcScraper.scrapeVCs();
+      
+      for (const vcData of scrapedVCs) {
+        await this.createVC(vcData);
+      }
+      
+      console.log(`[Storage] Successfully refreshed ${scrapedVCs.length} VCs`);
+      return { success: true, count: scrapedVCs.length };
+    } catch (error) {
+      console.error('[Storage] Error refreshing VC data:', error);
+      return { success: false, count: 0 };
+    }
   }
 }
 

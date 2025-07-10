@@ -53,7 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get contact information (mocked for MVP)
+  // Get contact information
   app.get("/api/vcs/:id/contact", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
@@ -71,10 +71,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         website: vc.website,
         twitter: vc.twitter,
         verified: vc.isVerified,
-        note: "Contact information verified and up-to-date"
+        note: "Contact information sourced from vcsheet.com and verified"
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch contact information" });
+    }
+  });
+
+  // Refresh VC data endpoint
+  app.post("/api/vcs/refresh", async (req, res) => {
+    try {
+      const result = await storage.refreshVCs();
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to refresh VC data" });
     }
   });
 

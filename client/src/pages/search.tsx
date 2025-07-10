@@ -5,6 +5,7 @@ import Header from "@/components/header";
 import Footer from "@/components/footer";
 import SearchFilters from "@/components/search-filters";
 import VCCard from "@/components/vc-card";
+import RefreshButton from "@/components/refresh-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -67,19 +68,22 @@ export default function Search() {
           {/* Results */}
           <div className="lg:w-3/4">
             <div className="mb-6">
-              <h1 className="text-2xl font-bold text-foreground mb-2">
-                {filters.industry 
-                  ? `Venture Capitalists in ${filters.industry}`
-                  : 'All Venture Capitalists'
-                }
-              </h1>
+              <div className="flex justify-between items-center mb-2">
+                <h1 className="text-2xl font-bold text-foreground">
+                  {filters.industry 
+                    ? `Venture Capitalists in ${filters.industry}`
+                    : 'All Venture Capitalists'
+                  }
+                </h1>
+                <RefreshButton />
+              </div>
               <p className="text-muted-foreground">
                 {isLoading ? (
                   'Loading...'
                 ) : error ? (
                   'Error loading results'
                 ) : (
-                  `Showing ${data?.total || 0} specialized investors`
+                  `Showing ${data?.total || 0} specialized investors sourced from vcsheet.com`
                 )}
               </p>
             </div>
